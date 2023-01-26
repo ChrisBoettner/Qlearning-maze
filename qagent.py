@@ -19,6 +19,7 @@ class QAgent:
         A Q-learning agent built to learn to solve the maze game.
 
         Configuration:
+
             LEARNING_RATE:
                 Determines to what extent newly acquired information overrides
                 old information. The default is 1.
@@ -40,7 +41,6 @@ class QAgent:
                 Reward for winning the game. The default is 100.
         '''
         # load configuration
-        self.name = "QAGENT"
         self.load_configuration()
 
         # setup maze and Q-table
@@ -163,6 +163,7 @@ class QAgent:
         '''
         intercept = self.config["EPSILON_START"]
         slope = (self.config["EPSILON_END"] - intercept) / num_episodes
+
         return slope * episode + intercept
 
     def load_configuration(self) -> None:
@@ -171,7 +172,7 @@ class QAgent:
         '''
         with open("config.yaml") as f:
             config = yaml.safe_load(f)
-        self.config = config[self.name]
+        self.config = config["QAGENT"]
 
     def configure(self, configuration: dict[str, float]) -> None:
         '''
@@ -182,41 +183,3 @@ class QAgent:
                 self.config[key] = value
             else:
                 raise KeyError(f"{key} not a valid item in the configuration.")
-
-
-class DQAgent(QAgent):
-    def __init__(self, maze: MazeGame) -> None:
-        '''
-        A Q-learning agent built to learn to solve the maze game.
-
-        Configuration:
-            LEARNING_RATE:
-                Determines to what extent newly acquired information overrides
-                old information. The default is 1.
-            DISCOUNT_FACTOR:
-                Determines the importance of future rewards. The
-                default is 0.5.
-            EPSILON_START:
-                Probability of choosing explore over exploit strategy at
-                beginning of training. The default is 0.8 .
-            EPSILON_END:
-                Probability of choosing explore over exploit strategy at
-                end of training. The default is 0.1 .
-
-            SURVIVAL_REWARD:
-                Reward for surviving turn. The default is 1.
-            DEATH_PENALTY:
-                Penalty for dying. The default is -5.
-            VICTORY_REWARD:
-                Reward for winning the game. The default is 100.
-        '''
-        # load configuration
-        self.name = "DQAGENT"
-        self.load_configuration()
-
-        # setup maze and Q-table
-        self.maze = maze
-
-        # map game actions to integers
-        self.actions = {0: 'u', 1: 'd', 2: 'l', 3: 'r'}
-    
